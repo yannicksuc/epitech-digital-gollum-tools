@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ED - Competencies
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  Gollum is watching you
 // @author       Yannick SUC
 // @match        https://intra.epitech.digital/mod/competencies/view.php*
@@ -129,9 +129,11 @@ function newXHR() {
                     let td = $(this).closest('td');
                     let colid = splittedId.length > 3 ? parseInt(splittedId[3]) : 0;
                     td.removeClass (function (index, className) {return (className.match (/(^|\s)colored\S+/g) || []).join(' ');});
-                    let competency = competencies.length > colid ? competencies[colid].find(comp => comp.competency == compid) : ""
-                    console.log(colid, competencies[colid].find(comp => comp.competency == compid), competency.defaultvalue);
-                    td.addClass('colored-' + (competency.value ? competency.value : competency.defaultval))
+                    let competency = competencies.length > colid ? competencies[colid].find(comp => comp.competency == compid) : null
+                    if (!competency)
+                        td.addClass('colored-')
+                    else
+                        td.addClass('colored-' + (competency.value ? competency.value : competency.defaultval))
                 })
             }
         }
@@ -266,10 +268,13 @@ function fillStudentsInfos(doMail, doScheduler) {
             students[j -3].addCompetency(new Competency("", behavior, behavior_description, grade, comment));
         }
     });
-    sendStudent(doMail, doScheduler);
+    for (var i = 0; i < students.length; i++) {
+        sendStudent(doMail, doScheduler, i);
+    }
 }
 
-function sendStudent(doMail, doScheduler) {
+function sendStudent(doMail, doScheduler, studentIndex) {
+    console.log('send student' + studentIndex);
     var xhr = new XMLHttpRequest();
     var url = "https://prod-238.westeurope.logic.azure.com:443/workflows/972468d651d840de8e134b4267e222a2/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Fey56QsbiorNeg1XE2XxI4fuEBkvYbihs7AlHxj_3A0";
     xhr.open("POST", url, true);
@@ -280,17 +285,16 @@ function sendStudent(doMail, doScheduler) {
         }
     };
 
-    for (var i = 0; i < students.length; i++) {
-        var output = JSON.parse(JSON.stringify(students[i]));
-        var table = generateTable(students[i]);
-        output.extract = table;
-        output.course = course_name;
 
-        if (doScheduler)
-            findScheduler(getKeynoteUrl(), data.users[0].id, table)
-        if (doMail)
-            xhr.send(JSON.stringify(output));
-    }
+    var output = JSON.parse(JSON.stringify(students[studentIndex]));
+    var table = generateTable(students[studentIndex]);
+    output.extract = table;
+    output.course = course_name;
+
+    if (doScheduler)
+        findScheduler(getKeynoteUrl(), data.users[studentIndex].id, table)
+    if (doMail)
+        xhr.send(JSON.stringify(output));
 }
 
 
