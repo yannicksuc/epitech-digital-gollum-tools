@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ED - Global search engine
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.6
 // @description  try to take over the world!
 // @author       Yannick SUC
 // @match        https://intra.epitech.digital/*
@@ -14,10 +14,50 @@
 // @grant        none
 // ==/UserScript==
 
-getCourses();
+function setCookie(cname, cvalue, exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  let expires = "expires="+d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
 
-let courses = [];
+function getCookie(cname) {
+  let name = cname + "=";
+  let ca = document.cookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+function saveCoursesToStorage() {
+    localStorage.setItem('courses', JSON.stringify(courses));
+    sessionStorage.setItem('coursesUpdated', true);
+}
+
+function fillCoursesFromStorage() {
+    courses = JSON.parse(localStorage.getItem('courses'))
+    if (!courses) {
+        courses = [];
+    }
+}
+
+function areCoursesUpdated() {
+    if (!courses.length)
+        return false;
+    return sessionStorage.getItem('coursesUpdated');
+}
+
+let courses;
+fillCoursesFromStorage();
 let filteredCourses = [];
+const moodleSession = getCookie('MoodleSession')
 
 const searchOptions = {
   keys: [
@@ -25,7 +65,8 @@ const searchOptions = {
     "fullname",
     "categoryname",
     "shortname",
-    "summary"
+    "summary",
+    "id"
   ]
 };
 
@@ -53,7 +94,7 @@ function KeyPress(e) {
         if (!isOnSecondPage && !output_list.find(':focus').length)
             switchPage(true)
         return e;
-    } else if (e.keyCode != 9 && !evtobj.shiftKey){
+    } else if (e.keyCode != 9 && !evtobj.shiftKey && e.keyCode != 40){
         if (isOnSecondPage) {
             switchPage(false);
         }
@@ -64,27 +105,29 @@ function KeyPress(e) {
 }
 
 function switchPage(forcePage) {
+    if (forcePage == isOnSecondPage)
+        return;
+
     if (forcePage)
-        isOnSecondPage != forcePage
-    if (isOnSecondPage) {
-        $(".flip-card-inner").css('transform', 'rotateY(0deg)');
-        output_list.find('a').attr('tabindex', "0")
-        output_list2.find('a').attr('tabindex', "-1")
-        setTimeout(function(){
-            $('.flip-card-back').hide();
-            console.log('hide');
-        }, 1000);
-        $('.flip-card-front').show();
-    } else {
-        setTimeout(function(){ $('.flip-card-front').hide(); }, 1000);
-        $('.flip-card-back').show();
-        $(".flip-card-inner").css('transform', 'rotateY(180deg)');
-        output_list.find('a').attr('tabindex', "-1")
-        output_list2.find('a').attr('tabindex', "0")
+        isOnSecondPage = !forcePage
+
+    launchPageSwitchAnimation();
+
+    if (!isOnSecondPage){
         output_list2.find('a').focus();
         getActivities();
     }
+
     isOnSecondPage = !isOnSecondPage;
+}
+
+function launchPageSwitchAnimation()
+{
+    setTimeout(function(){$(isOnSecondPage ? '.flip-card-front' : '.flip-card-back').hide(); }, 1000);
+    $(isOnSecondPage ? '.flip-card-front' : '.flip-card-back').show();
+    $(".flip-card-inner").css('transform', isOnSecondPage ? 'rotateY(0deg)': 'rotateY(180deg)');
+    output_list.find('a').attr('tabindex', isOnSecondPage ? "0" : "-1")
+    output_list2.find('a').attr('tabindex', isOnSecondPage ? "-1" : "0")
 }
 
 function quitSearch() {
@@ -93,8 +136,14 @@ function quitSearch() {
 
 function toggleSearch() {
     toggleElementVisibility(global_search);
-    if (global_search.is(":visible"))
+    if (global_search.is(":visible")) {
         searchbar.focus();
+        if (!areCoursesUpdated()) {
+            getCourses();
+        }
+        fuse.setCollection(courses);
+        searchbar.trigger("input")
+    }
 }
 
 function toggleElementVisibility(box) {
@@ -148,10 +197,10 @@ function toggleElementVisibility(box) {
     searchbar = global_search.find("#gs-searchbar");
     output_list = global_search.find("#gs-courselist");
     output_list2 = global_search.find("#gs-courselist2");
-    $(".flip-card").tilt({maxTilt:        10,perspective:    2000});
+    $(".flip-card").tilt({maxTilt: 10,perspective: 2000});
 
     //Close window on click outside of the boxes
-    $('#global-search, #gs-searchbar-container').on('click', function(){0
+    $('#global-search, #gs-searchbar-container').on('click', function(){
         toggleSearch();
     }).children().click(function(e) {
         e.stopPropagation();
@@ -163,6 +212,15 @@ function toggleElementVisibility(box) {
     })
 
     document.onkeydown = KeyPress;
+
+    $('.fixed-top .nav.navbar-nav').prepend('<button class="btn btn-primary" id="open-search" value="" style="height: 36px;margin: auto;width: fit-content;"><i class="fa fa-search" style="margin-right: 0.3em;"></i>  ctrl + space</button>')
+    $('#open-search').click(function(){toggleSearch();})
+
+    $(document).on('keydown', '#global-search input, #global-search button, #global-search a', function(e) {
+        if (e.keyCode == 40) {
+            $(this).next('input, button, a').focus();
+   }
+});
 })();
 
 function updateOutputList(courses)
@@ -203,12 +261,15 @@ function updateOutputList2(course, links)
 
 
 function getCourseElem(course, tabIndex, addButton=false, index) {
+    var courseyear = course.customfields.find(field => field.shortname === 'schoolyear');
+    if (courseyear)
+        courseyear = courseyear.value !== '0000' ? courseyear.value : null
     var button = `<button data-idx="${index}" class="next-page" type="button" style="padding: 0 3em 0 0.5em; box-shadow:rgba(0,0,0,0.1) 0 4px 6px -1px,rgba(0,0,0,0.06) 0 2px 4px -1px;border:unset;width:1.5em;height:1.5em;background-color:var(--primary);color:var(--white);border-radius:1.5em;position:absolute;top:auto;bottom:auto;"><i class="fa fa-angle-right" style="margin: auto;pointer-events: none;"></i><span style="margin: auto;padding-left: 0.2em;margin: 0;text-align: center;line-height: 1.5em;font-size: 0.8em;">open</span></button>`
-    return `<div class="searchitem" id="searchitem_course_${course.id}" data-idx="${index}" style="padding: 0 1em; height: 30px; position: relative; display: flex; width: 100%;align-items: center; justify-content: space-between; white-space: nowrap;" ><a tabindex="${tabIndex}" href="/course/view.php?id=${course.id}" style="overflow:hidden; ">${course.displayname}</a>${addButton ? button : ""}<span title="course category" class="chips" style="padding-left: 1em;">${course.categoryname}</span></div>`;
+    return `<div class="searchitem" id="searchitem_course_${course.id}" data-idx="${index}" style="padding: 0 1em; height: 30px; position: relative; display: flex; width: 100%;align-items: center; justify-content: space-between; white-space: nowrap;" ><a tabindex="${tabIndex}" href="/course/view.php?id=${course.id}" style="overflow:hidden;" title="${course.displayname}">${course.displayname}</a>${addButton ? button : ""}<span title="course category" class="chips" style="padding-left: 1em;">${course.categoryname + (courseyear ? ' - ' + courseyear : '') }</span></div>`;
 }
 
 function getLinkElem(href, name, icon) {
-    return `<div class="searchitem" style="padding: 0 1em; height: 30px; position: relative; display: flex; width: 100%;align-items: center; justify-content: space-between; white-space: nowrap;" ><a tabindex="${0}" href="${href}" style="overflow:hidden;">${name}</a><span title="course module" class="chips" style="padding-left: 1em;">${icon}</span></div>`;
+    return `<div class="searchitem" style="padding: 0 1em; height: 30px; position: relative; display: flex; width: 100%;align-items: center; justify-content: space-between; white-space: nowrap;" ><a tabindex="${0}" href="${href}" style="overflow:hidden;" title="${name}">${name}</a><span title="course module" class="chips" style="padding-left: 1em;">${icon}</span></div>`;
 }
 
 function search(what) {
@@ -217,6 +278,7 @@ function search(what) {
     return courses;
 }
 
+let courseSearchToggled
 function getCourses() {
     require(['core/ajax'], function(ajax) {
         var promises = ajax.call([
@@ -225,10 +287,11 @@ function getCourses() {
 
         promises[0].done(function(response) {
             courses = JSON.parse(JSON.stringify(response)).courses;
+            saveCoursesToStorage();
             fuse.setCollection(courses);
             searchbar.trigger("input")
         }).fail(function(ex) {
-            console.log('No courses found')
+            console.warn('No courses found')
         });
 
     });
@@ -241,17 +304,8 @@ function getActivities() {
          let pageDom = $($.parseHTML(result));
          const links = pageDom.find('a.aalink');
         updateOutputList2(null, links);
-    })
-        .catch(error => console.log('error', error));
+    }).catch(error => console.warn('ScrapperActivities', error));
 }
-
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-var moodleSession = getCookie('MoodleSession')
 
 var myHeaders = new Headers();
 myHeaders.append("Connection", "keep-alive");
