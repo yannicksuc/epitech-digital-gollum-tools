@@ -19,13 +19,18 @@ Download all .js files you want to have. Each file representing one tool (compet
 For each javascript script (files ending with .js) you want to add :
 - Click on the Tampermonkey extension icon
 - In the menu select "[+] Ajouter un nouveau script"
-- Copy th script in the windows
-- Save with ctr + s
+- Paste the script in the window
+- Save with ctrl + s
 
-### Add scripts in 
+### Add scripts in Stylus
 
-For each javascript file you want to add : 
+For each js file you want to add : 
  - Copy css file content
  - Click on the Stylus extension icon
  - Click on import button
- - Paste
+ - Paste the script in the window
+
+## Updating
+
+It's automatic for tampermonkey, don't worry. (Every 6 hours)
+For Stylus, not at the moment.
