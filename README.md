@@ -1,6 +1,6 @@
 # Gollum - Tools & Improvements
 
-Gollum aim to help out the pedagogical team and students of Epitech Digital. It's a conglomaration of various **tools**, **extensions** and **scripts** to **improve productivity, ease workflow and enhance user experience** on Epitech Digital's Intranet (Merlin).
+Gollum aim to help out the pedagogical team and students of Epitech Digital. It's a conglomeration of various **tools**, **extensions** and **scripts** to **improve productivity, ease workflow and enhance user experience** on Epitech Digital's Intranet (Merlin).
 
 ## Requirement 
 
