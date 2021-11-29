@@ -1,0 +1,540 @@
+@-moz-document url-prefix("https://intra.epitech.digital") {
+#gs-courselist a + button {
+    right:0;
+    transform: translate(-3em, 0);
+    transition: all 0.25s;
+        opacity: 0;
+    cursor: pointer;
+}
+
+#gs-courselist a:focus + button, #gs-courselist > div:hover > button, #gs-courselist a + button:focus{
+    transform: translate(-0.8em, 0);
+    opacity: 1;
+    transition: all 0.25s;
+}
+
+
+#gs-courselist > div > button + span{
+    transition: all 0.15s;
+        transform: translate(0, 0);
+}
+
+#gs-courselist a:focus + button + span, #gs-courselist a + button:focus + span, #gs-courselist > div:hover > button + span{
+    opacity: 0!important;
+            transform: translate(-3em, 0);
+    transition: all 0.15s;
+}
+
+#gs-courselist2 > div:first-child {
+    background-color: var(--secondary);
+}
+
+#global-search {
+    background-color: rgba(51, 51, 51, 0.667);
+-webkit-transition: background-color 1000ms linear;
+    -ms-transition: background-color 1000ms linear;
+    transition: all 200ms linear;
+    transform: translateY(0)
+}
+
+#global-search.hidden {
+    background-color: transparent;
+-webkit-transition: background-color 1000ms linear;
+    -ms-transition: background-color 1000ms linear;
+    transition: all 200ms linear;
+    transform: translateY(200px)
+}
+
+#global-search #gs-searchbar-container  > div{
+    width: 25em;
+    transition: width 150ms linear;
+}
+
+#global-search.visuallyhidden #gs-searchbar-container  > div{
+    width: 0px;
+    transition: width 150ms;
+}
+
+#global-search .flip-card-inner {
+    transform: rotateY(0);
+    transition: transform 180ms;
+}
+
+#global-search.visuallyhidden .flip-card-inner {
+    transform: rotateY(45deg);
+    transition: transform 180ms;
+}
+
+.hidden {
+   display: none !important;
+}
+
+.visuallyhidden {
+   opacity: 0 !important;
+}
+
+#global-search ul {
+      vertical-align: middle;
+  align-items: center;
+    display: flex;
+}
+
+.lds-facebook {
+  display: block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: auto;
+  margin-top: calc(50% - 40px);
+}
+.lds-facebook div {
+  display: inline-block;
+  position: absolute;
+  left: 8px;
+  width: 16px;
+  background: var(--primary);
+  animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+  
+}
+.lds-facebook div:nth-child(1) {
+  left: 8px;
+  animation-delay: -0.24s;
+}
+.lds-facebook div:nth-child(2) {
+  left: 32px;
+  animation-delay: -0.12s;
+}
+.lds-facebook div:nth-child(3) {
+  left: 56px;
+  animation-delay: 0;
+}
+@keyframes lds-facebook {
+  0% {
+    top: 8px;
+    height: 64px;
+  }
+  50%, 100% {
+    top: 24px;
+    height: 32px;
+  }
+}
+
+}
+
+@-moz-document url-prefix("https://intra.epitech.digital/calendar") {
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+.path-calendar .maincalendar .calendarmonth ul li {
+    border-radius: 4px;
+    background-color: #f76969;
+    margin-right: 10px;
+    margin-bottom: 3px;
+    padding: 4px 8px;
+}
+
+.modal-header.calendar_event_course {
+    background-color: #d1d1d1;
+    margin: 0;
+}
+
+.fa-graduation-cap {
+    display: none;
+}
+
+.path-calendar .maincalendar .calendarmonth ul li.minimize {
+    border-radius: 0;
+    margin-right: 0;
+    text-decoration: none;
+    height: 22px;
+    padding: 0 8px;
+    line-height: 12px;
+    color: #fff;
+    font-size: 12px;
+    border: 1px solid transparent;
+    display: flex;
+}
+
+.path-calendar .maincalendar .calendarmonth ul li.minimize-last {
+    border-radius: 0 4px 4px 0;
+    margin-right: 10px;
+}
+
+.path-calendar .maincalendar .calendarmonth ul li.minimize-first {
+    border-radius: 4px 0 0 4px;
+}
+
+.path-calendar .maincalendar .calendarmonth ul li > a,
+.path-calendar .maincalendar .calendarmonth ul li > a:hover {
+    text-decoration: none !important;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: .1px;
+    line-height: 12px;
+    white-space: normal;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    display: block;
+    -webkit-align-items: center;
+    align-items: flex-start;
+    overflow: hidden;
+}
+
+
+.path-calendar .maincalendar .calendarmonth ul li > a img {
+    margin-top: 4px;
+}
+
+.path-calendar .maincalendar .calendarmonth ul li > a {
+    max-height: 22px;
+    transition: max-height 0.5s ease-out;
+}
+
+.path-calendar .maincalendar .calendarmonth ul li:hover > a {
+    white-space: normal;
+    max-height: 500px;
+    transition: max-height 0.5s ease-in;
+}
+
+.path-calendar .maincalendar .calendarmonth ul li.minimize:hover > a {
+    white-space: nowrap;
+    align-items: center;
+    overflow: visible;
+}
+
+
+.path-calendar .maincalendar .calendarmonth ul li.minimize > a {
+    white-space: nowrap;
+    align-items: center;
+}
+
+.path-calendar .maincalendar .calendarmonth tbody td {
+    border: none;
+    padding: 0;
+}
+
+.path-calendar .maincalendar .calendarmonth .header {
+    border: none;
+    color: lightgray;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'Roboto';
+    background-color: #424243
+}
+}
+
+@-moz-document url-prefix("https://intra.epitech.digital/mod/competencies") {
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css");
+
+.mform .competencies-list .form-inline select.custom-select {
+    all: unset;
+    height: fit-content;
+    border: none;
+    overflow: hidden;
+    width: 160px;
+    padding: 0;
+    margin: 0;   
+}
+
+textarea.form-control:focus {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 50vh !important;
+    z-index: 100;
+border: none;
+    overflow: auto;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+
+
+.mform .competencies-list .form-inline.col-md-9 {
+    max-height: 90px;    
+}
+
+#page-mod-competencies-view .felement textarea {
+    border: none;
+}
+
+.mform  .competencies-list .form-inline select.custom-select::-moz-focus-inner {
+    border: 0;
+}
+.mform .competencies-list .form-inline select.custom-select:focus {
+    outline: none;
+}
+
+.mform .competencies-list .form-inline select.custom-select:selected {
+    outline: none;
+}
+
+select:focus > option:checked {
+      background: #000 !important;
+}
+
+.mform .competencies-list .form-inline select.custom-select option {
+    height: 24px;
+    margin: 3px;
+    cursor: pointer;
+    overflow: hidden;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 1em;
+    border-style: solid;
+    border-width: 1px;
+    font-family: fontAwesome, "arial";
+    padding-top: 0.23em;
+    width: 154px;
+    display: inline-block;
+}
+
+.mform .competencies-list td .form-inline select.custom-select option:not(:checked) {
+/*    opacity: 0;*/
+    display:none;
+}
+
+
+.mform .competencies-list td:hover .form-inline select.custom-select option {
+    width: 70px;
+    height: 24px;
+    display:inline-block;
+}
+
+.mform .competencies-list .form-inline select.custom-select option:nth-child(1) {
+    border-color: #d7dbdd;    
+}
+
+.mform .competencies-list .colored- option:nth-child(1) {
+        color: var(--white);
+}
+
+.mform .competencies-list .form-inline select.custom-select option:nth-child(2) {
+    border-color: #b1babb;    
+}
+
+
+.mform .competencies-list .colored-0 option:nth-child(2) {
+    background-color: #b1babb;    
+        color: var(--white);
+}
+
+.mform .competencies-list .form-inline select.custom-select option:nth-child(3) {
+    border-color: #ec7062;    
+}
+
+.mform .competencies-list .colored-1 option:nth-child(3) {
+    background-color: #ec7062;    
+        color: var(--white);
+}
+
+.mform .competencies-list .form-inline select.custom-select option:nth-child(4) {
+    border-color: #f4cf40;    
+}
+
+.mform .competencies-list .colored-2 option:nth-child(4) {
+    background-color: #f4cf40;    
+    color: var(--white);
+}
+
+.mform .competencies-list .form-inline select.custom-select option:nth-child(5) {
+    border-color: #57d68c;    
+}
+
+.mform .competencies-list .colored-3 option:nth-child(5) {
+    background-color: #57d68c;    
+    color: var(--white);
+}
+
+.mform .competencies-list .form-inline select.custom-select option:nth-child(6) {
+    border-color: #5cade2;    
+}
+
+.mform .competencies-list .colored-4 option:nth-child(6) {
+    background-color: #5cade2;
+    color: var(--white);
+}
+
+
+#page-mod-competencies-view .competencies-list td.colored- {
+    border-left: solid 0.15em #d7dbdd !important;
+}
+
+#page-mod-competencies-view .competencies-list td.colored-0 {
+    border-left: solid 0.15em #b1babb !important;    
+}
+#page-mod-competencies-view .competencies-list td.colored-1 {
+    border-left: solid 0.15em #ec7062 !important;    
+}
+#page-mod-competencies-view .competencies-list td.colored-2 {
+        border-left: solid 0.15em #f4cf40 !important;    
+}
+#page-mod-competencies-view .competencies-list td.colored-3 {
+    border-left: solid 0.15em #57d68c !important;    
+}
+#page-mod-competencies-view .competencies-list td.colored-4 {
+    border-left: solid 0.15em #5cade2 !important;
+}
+
+th:nth-child(3) {
+    min-width: 250px;
+}
+
+#page-mod-competencies-view .competencies-list td:nth-child(3) {
+    padding: 0;
+}
+
+#page-mod-competencies-view .competencies-list td:nth-child(3) > div {
+    display: contents;
+}
+
+#page-mod-competencies-view .competencies-list td:nth-child(3) > div .col-md-9 {
+    padding: 0;
+}
+
+
+select:valid {
+  color: grey !important;
+}
+
+.fuzzyResults {
+  position:absolute;
+  display: none;
+  border: 1px solid #ccc;
+  background: #FFF;
+  z-index: 100;
+  overflow-y: scroll;
+  max-height: 50vh;
+}
+
+.__autoitem {
+  cursor: pointer;
+  color: #000;
+  padding: 2px;
+}
+
+.__autoitem.selected, .__autoitem.selected:hover {
+  background: var(--primary);
+    color: var(--white);
+}
+
+.__autoitem:hover {
+  background: var(--secondary);
+}
+
+#id_group {
+    display:none;
+}
+
+#groups-searchbar{
+    vertical-align: middle;
+    width: calc(100% - 44px);
+    border: 1px solid var(--secondary);
+    height: 34px;
+    margin-bottom: 8px;
+    max-width: 34.9em;
+}
+
+.csv-taskbar {
+    display: flex;
+}
+
+.btn {
+    height: 34px;
+}
+
+
+/* Slider */
+
+.switch {
+  display: inline-block;
+  position: relative;
+  height: 17px;
+  width: 30px;
+  margin-top: 0.2em;
+}
+
+.switch input {
+  display:none;
+}
+
+.slider {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  background-color: #ccc;
+  cursor: pointer;
+  transition: .4s;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 13px;
+  width: 13px;
+  bottom: 2px;
+  left: 2px;
+  background-color: #fff;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #66bb6a;
+}
+
+input:checked + .slider:before {
+  transform: translateX(13px);
+}
+
+.slider.round {
+  border-radius: 17px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.competencies-list tbody tr:first-child th:first-child > p {
+    display: block;
+}
+
+.competencies-list tbody tr:first-child th:first-child {
+    min-width: 12em;
+    vertical-align: middle;
+    display: flex;
+    border: none;
+    justify-content: space-between;
+}
+
+.competencies-list tbody tr:first-child th:nth-child(3) {
+    width:100%;
+}
+
+.competencies-list tbody tr:first-child th:nth-child(1) {
+    width:30vw;
+}
+
+.competencies-list tbody tr:first-child th:nth-child(2) {
+    border-left: dashed 0.15em var(--primary);
+}
+
+
+.competencies-list .short-desc {
+    display:none;
+}
+
+.competencies-list.short-mode .short-desc {
+    display: block;
+}
+
+.competencies-list.short-mode .long-desc {
+    display:none;
+}
+}
