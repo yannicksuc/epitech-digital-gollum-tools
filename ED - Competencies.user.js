@@ -51,9 +51,6 @@ var shortCompDescs = JSON.parse(localStorage.getItem('shortCompDescs'));
 if (!shortCompDescs)
     shortCompDescs = [];
 
-console.log(shortCompDescs);
-console.log("toto");
-
 function setupGroupsSearchBar()
 {
     groups = $('select#id_group option').map((i, elem) => {return{"index":i, "methodname":"core_course_get_enrolled_users_by_cmid", "args":{"cmid":cmid,"groupid":elem.value}, name: elem.innerHTML}}).toArray()
@@ -121,6 +118,7 @@ function fgetCookie(name)
 
 function createCompetenciesDescriptionModeToggle()
 {
+    $('.competencies-list thead tr:first-child th:nth-child(3)').addClass('resizable')
 
     $('.competencies-list thead tr:first-child th:first-child').addClass('resizable').html('<p>Competencies</p><label title="Click to toggle short mode for competencies descriptions" class=switch for=checkbox id=competency-description-toggle><input id=checkbox type=checkbox><div class="round slider"></div></label>');
     $('.competencies-list tbody td:first-child').each(function() {
@@ -240,6 +238,17 @@ function resizeTextareas() {
         updateOptions($(this))
     })
 
+    table.find('thead select').change(function(){
+        var studentIndex = $(this).data("student");
+        console.log("yooo");
+        var value = $(this).val();
+        console.log('tbody td:nth-child('+ (3 + parseInt(studentIndex)) +')');
+        table.find('tbody td:nth-child('+ (3 + parseInt(studentIndex)) +')').each(function() {
+                    console.log("Update someone");
+            updateSelect($(this), value);
+        })
+    })
+
     function newXHR() {
         var realXHR = new oldXHR();
         realXHR.addEventListener("readystatechange", function() {
@@ -304,8 +313,8 @@ function updateOptions(elem) {
     })
 }
 
-function updateSelect(elem) {
-    var value = elem.val()[0];
+function updateSelect(elem, forcedvalue) {
+    var value = forcedvalue ? forcedvalue : elem.val()[0];
     elem = elem.closest('td');
     elem.removeClass('colored-0 colored-1 colored-2 colored-3 colored-4 colored-');
     elem.addClass("colored-" + value)
