@@ -253,6 +253,15 @@ border: none;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
 
+#page-mod-competencies-view .competencies-list table {
+    width: 99%;
+    border: 0;
+}
+
+#page-mod-competencies-view .competencies-list thead tr:nth-child(2) th.sticky-left {
+    z-index: 0;
+}
+
 
 
 .mform .competencies-list .form-inline.col-md-9 {
@@ -295,7 +304,6 @@ select:focus > option:checked {
 }
 
 .mform .competencies-list td .form-inline select.custom-select option:not(:checked) {
-/*    opacity: 0;*/
     display:none;
 }
 
@@ -360,6 +368,10 @@ select:focus > option:checked {
     color: var(--white);
 }
 
+#page-mod-competencies-view .competencies-list td {
+    white-space: normal;
+}
+
 
 #page-mod-competencies-view .competencies-list td.colored- {
     border-left: solid 0.15em #d7dbdd !important;
@@ -381,10 +393,6 @@ select:focus > option:checked {
     border-left: solid 0.15em #5cade2 !important;
 }
 
-th:nth-child(3) {
-    min-width: 250px;
-}
-
 #page-mod-competencies-view .competencies-list td:nth-child(3) {
     padding: 0;
 }
@@ -395,6 +403,18 @@ th:nth-child(3) {
 
 #page-mod-competencies-view .competencies-list td:nth-child(3) > div .col-md-9 {
     padding: 0;
+}
+
+#page-mod-competencies-view .competencies-list thead th {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+}
+
+#page-mod-competencies-view .competencies-list thead th:nth-child(3), #page-mod-competencies-view .competencies-list thead th:nth-child(1){
+    width: auto;
+    min-width: 250px;
+    max-width: none;
 }
 
 
@@ -457,6 +477,7 @@ select:valid {
   height: 17px;
   width: 30px;
   margin-top: 0.2em;
+        float: right;
 }
 
 .switch input {
@@ -501,27 +522,25 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-.competencies-list tbody tr:first-child th:first-child > p {
-    display: block;
+.competencies-list thead tr:first-child th:first-child > p {
+    display: inline-block;
 }
 
-.competencies-list tbody tr:first-child th:first-child {
+.competencies-list thead tr:first-child th:first-child {
     min-width: 12em;
     vertical-align: middle;
-    display: flex;
-    border: none;
     justify-content: space-between;
 }
 
-.competencies-list tbody tr:first-child th:nth-child(3) {
+.competencies-list thead tr:first-child th:nth-child(3) {
     width:100%;
 }
 
-.competencies-list tbody tr:first-child th:nth-child(1) {
+.competencies-list thead tr:first-child th:nth-child(1) {
     width:30vw;
 }
 
-.competencies-list tbody tr:first-child th:nth-child(2) {
+.competencies-list thead tr:first-child th:nth-child(2) {
     border-left: dashed 0.15em var(--primary);
 }
 
