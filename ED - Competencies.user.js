@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ED - Competencies
 // @namespace    http://tampermonkey.net/
-// @version      0.9
+// @version      1.2
 // @description  Gollum is watching you
 // @author       Yannick SUC
 // @match        https://intra.epitech.digital/mod/competencies/view.php*
@@ -48,6 +48,11 @@ myHeaders.append("Cookie", "MoodleSession=" + moodleSession);
 var sesskey = M.cfg.sesskey;
 
 var shortCompDescs = JSON.parse(localStorage.getItem('shortCompDescs'));
+if (!shortCompDescs)
+    shortCompDescs = [];
+
+console.log(shortCompDescs);
+console.log("toto");
 
 function setupGroupsSearchBar()
 {
@@ -117,8 +122,8 @@ function fgetCookie(name)
 function createCompetenciesDescriptionModeToggle()
 {
 
-    $('.competencies-list tbody tr:first-child th:first-child').addClass('resizable').html('<p>Competencies</p><label title="Click to toggle short mode for competencies descriptions" class=switch for=checkbox id=competency-description-toggle><input id=checkbox type=checkbox><div class="round slider"></div></label>');
-    $('.competencies-list tbody tr:not(:first-child) td:first-child').each(function() {
+    $('.competencies-list thead tr:first-child th:first-child').addClass('resizable').html('<p>Competencies</p><label title="Click to toggle short mode for competencies descriptions" class=switch for=checkbox id=competency-description-toggle><input id=checkbox type=checkbox><div class="round slider"></div></label>');
+    $('.competencies-list tbody td:first-child').each(function() {
         const select = $(this).closest('tr').find('select').first();
         const id = select.data('competency');
         var short_desc = shortCompDescs[id];
@@ -230,7 +235,7 @@ function resizeTextareas() {
 
     const table = $(".competencies-list table")
     var oldXHR = window.XMLHttpRequest;
-    table.find('td select').each(function() {
+    table.find('tbody td select').each(function() {
           $(this).prop('multiple', true)
         updateOptions($(this))
     })
@@ -243,7 +248,7 @@ function resizeTextareas() {
                     data = JSON.parse(realXHR.responseText)[0].data;
                     var competencies = [data.competencies]
                     data.users.forEach(elem => competencies.push(elem.competencies))
-                    table.find('td:nth-child(-n+'+(competencies.length+2)+') select').each(function() {
+                    table.find('tbody td:nth-child(-n+'+(competencies.length+2)+') select').each(function() {
                         let splittedId = $(this).attr('id').split('_');
                         let compid = splittedId[2];
                         let td = $(this).closest('td');
@@ -264,7 +269,7 @@ function resizeTextareas() {
     window.XMLHttpRequest = newXHR;
 
 //    displayMessage("tests", 1);
-    !function(t){t.fn.resizableColumns=function(){var r=!1,h=0,i=t(this),a=t(this).find("tbody").first();a.find("th.resizable").each(function(){t(this).css("position","relative"),t(this).is(":not(:last-child)")&&t(this).is(":not(.no-resize)")&&t(this).nextAll("th.no-resize").length<t(this).nextAll("th").length&&t(this).append("<div class='resizer' style='position:absolute;top:0px;right:-3px;bottom:0px;width:6px;z-index:999;background:transparent;cursor:col-resize'></div>")}),t(document).mouseup(function(i){a.find("th").removeClass("resizing"),r=!1,i.stopPropagation()}),i.find(".resizer").mousedown(function(i){0==i.button&&(a.find("th").removeClass("resizing"),t(a).find("tr:first-child th:nth-child("+(t(this).closest("th").index()+1)+") .resizer").closest("th").addClass("resizing"),h=i.pageX,r=!0),i.stopPropagation()}).click(function(i){return!1}),i.mousemove(function(i){if(r){resizeTextareas();var t=a.find("th.resizing .resizer");if(1==t.length){var n=a.find("th.resizing + th");n.hasClass("no-resize")&&(n=n.next("th:not(.no-resize)"));var e=(i.pageX||0)-h,s=t.closest("th").innerWidth()+e,o=n.innerWidth()-e;0!=h&&0!=e&&50<s&&50<o&&(t.closest("th").innerWidth(s),h=i.pageX,n.innerWidth(o))}}})}}(jQuery);
+    !function(t){t.fn.resizableColumns=function(){var r=!1,h=0,i=t(this),a=t(this).find("thead").first();a.find("th.resizable").each(function(){t(this).css("position","sticky"),t(this).is(":not(:last-child)")&&t(this).is(":not(.no-resize)")&&t(this).nextAll("th.no-resize").length<t(this).nextAll("th").length&&t(this).append("<div class='resizer' style='position:absolute;top:0px;right:-3px;bottom:0px;width:6px;z-index:999;background:transparent;cursor:col-resize'></div>")}),t(document).mouseup(function(i){a.find("th").removeClass("resizing"),r=!1,i.stopPropagation()}),i.find(".resizer").mousedown(function(i){0==i.button&&(a.find("th").removeClass("resizing"),t(a).find("tr:first-child th:nth-child("+(t(this).closest("th").index()+1)+") .resizer").closest("th").addClass("resizing"),h=i.pageX,r=!0),i.stopPropagation()}).click(function(i){return!1}),i.mousemove(function(i){if(r){resizeTextareas();var t=a.find("th.resizing .resizer");if(1==t.length){var n=a.find("th.resizing + th");n.hasClass("no-resize")&&(n=n.next("th:not(.no-resize)"));var e=(i.pageX||0)-h,s=t.closest("th").innerWidth()+e,o=n.innerWidth()-e;0!=h&&0!=e&&50<s&&50<o&&(t.closest("th").innerWidth(s),h=i.pageX,n.innerWidth(o))}}})}}(jQuery);
     $('table').resizableColumns();
 
 })();
