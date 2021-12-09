@@ -226,7 +226,7 @@
 @-moz-document url-prefix("https://intra.epitech.digital/mod/competencies") {
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css");
 
-.mform .competencies-list .form-inline select.custom-select {
+.mform .competencies-list tbody .form-inline select.custom-select {
     all: unset;
     height: fit-content;
     border: none;
@@ -254,17 +254,20 @@ border: none;
 }
 
 #page-mod-competencies-view .competencies-list table {
-    width: 99%;
+    width: max-content;
+    min-width: 99%;
     border: 0;
+    margin: 0;
 }
+
 
 #page-mod-competencies-view .competencies-list thead tr:nth-child(2) th.sticky-left {
-    z-index: 0;
+    z-index: 1;
 }
 
 
 
-.mform .competencies-list .form-inline.col-md-9 {
+.mform .competencies-list tbody .form-inline.col-md-9 {
     max-height: 90px;    
 }
 
@@ -272,14 +275,14 @@ border: none;
     border: none;
 }
 
-.mform  .competencies-list .form-inline select.custom-select::-moz-focus-inner {
+.mform  .competencies-list tbody .form-inline select.custom-select::-moz-focus-inner {
     border: 0;
 }
-.mform .competencies-list .form-inline select.custom-select:focus {
+.mform .competencies-list tbody .form-inline select.custom-select:focus {
     outline: none;
 }
 
-.mform .competencies-list .form-inline select.custom-select:selected {
+.mform .competencies-list tbody .form-inline select.custom-select:selected {
     outline: none;
 }
 
@@ -287,7 +290,7 @@ select:focus > option:checked {
       background: #000 !important;
 }
 
-.mform .competencies-list .form-inline select.custom-select option {
+.mform .competencies-list tbody .form-inline select.custom-select option {
     height: 24px;
     margin: 3px;
     cursor: pointer;
@@ -301,33 +304,86 @@ select:focus > option:checked {
     padding-top: 0.23em;
     width: 154px;
     display: inline-block;
+    position: relative;
+    
 }
 
-.mform .competencies-list td .form-inline select.custom-select option:not(:checked) {
+
+option:hover {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    transition-property: box-shadow;
+    transition-duration: 0.2s;
+}
+
+td:not(:hover) option:checked:nth-child(1)::after {
+    content: " NOT GRADED";
+}
+td:not(:hover) option:checked:nth-child(2)::after {
+    content: "";
+}
+
+td:not(:hover) option:checked:nth-child(3)::after {
+    content: "SING";
+}
+
+td:not(:hover) option:checked:nth-child(4)::after {
+    content: "OW";
+}
+
+td:not(:hover) option:checked:nth-child(5)::after {
+    content: "T";
+}
+
+td:not(:hover) option:checked:nth-child(6)::after {
+    content: "VE";
+}
+
+tr:hover option:checked:nth-child(6)::before {
+    opacity: 1;
+    transition-property: opacity;
+    transition-duration: 1s;
+}
+
+tr option:checked:nth-child(6)::before {
+    font-family: FontAwesome, sans-serif;
+    font-size: 16px;
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right:0;
+    opacity: 0;
+    background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/13471/sparkles.gif");
+    mix-blend-mode: color-dodge;
+    transition-property: opacity;
+    transition-duration: 1s;
+}
+
+.mform .competencies-list tbody td .form-inline select.custom-select option:not(:checked) {
     display:none;
 }
 
 
-.mform .competencies-list td:hover .form-inline select.custom-select option {
+.mform .competencies-list tbody td:hover .form-inline select.custom-select option {
     width: 70px;
     height: 24px;
     display:inline-block;
 }
 
-.mform .competencies-list .form-inline select.custom-select option:nth-child(1) {
+.mform .competencies-list tbody .form-inline select.custom-select option:nth-child(1) {
     border-color: #d7dbdd;    
 }
 
-.mform .competencies-list .colored- option:nth-child(1) {
-        color: var(--white);
+.mform .competencies-list tbody option:checked:nth-child(1) {  
 }
 
-.mform .competencies-list .form-inline select.custom-select option:nth-child(2) {
+.mform .competencies-list tbody .form-inline select.custom-select option:nth-child(2) {
     border-color: #b1babb;    
 }
 
 
-.mform .competencies-list .colored-0 option:nth-child(2) {
+.mform .competencies-list tbody option:checked:nth-child(2) {
     background-color: #b1babb;    
         color: var(--white);
 }
@@ -336,16 +392,16 @@ select:focus > option:checked {
     border-color: #ec7062;    
 }
 
-.mform .competencies-list .colored-1 option:nth-child(3) {
+.mform .competencies-list option:checked:nth-child(3) {
     background-color: #ec7062;    
-        color: var(--white);
+    color: var(--white);
 }
 
 .mform .competencies-list .form-inline select.custom-select option:nth-child(4) {
     border-color: #f4cf40;    
 }
 
-.mform .competencies-list .colored-2 option:nth-child(4) {
+.mform .competencies-list option:checked:nth-child(4) {
     background-color: #f4cf40;    
     color: var(--white);
 }
@@ -354,7 +410,7 @@ select:focus > option:checked {
     border-color: #57d68c;    
 }
 
-.mform .competencies-list .colored-3 option:nth-child(5) {
+.mform .competencies-list option:checked:nth-child(5) {
     background-color: #57d68c;    
     color: var(--white);
 }
@@ -363,7 +419,7 @@ select:focus > option:checked {
     border-color: #5cade2;    
 }
 
-.mform .competencies-list .colored-4 option:nth-child(6) {
+.mform .competencies-list option:checked:nth-child(6) {
     background-color: #5cade2;
     color: var(--white);
 }
@@ -373,7 +429,7 @@ select:focus > option:checked {
 }
 
 
-#page-mod-competencies-view .competencies-list td.colored- {
+#page-mod-competencies-view .competencies-list td.colored-undefined  {
     border-left: solid 0.15em #d7dbdd !important;
 }
 
@@ -413,10 +469,9 @@ select:focus > option:checked {
 
 #page-mod-competencies-view .competencies-list thead th:nth-child(3), #page-mod-competencies-view .competencies-list thead th:nth-child(1) {
     width: auto;
-    min-width: auto;
+    min-width: 0;
     max-width: none;
 }
-
 
 select:valid {
   color: grey !important;
@@ -477,7 +532,7 @@ select:valid {
   height: 17px;
   width: 30px;
   margin-top: 0.2em;
-        float: right;
+  float: right;
 }
 
 .switch input {
@@ -540,8 +595,11 @@ input:checked + .slider:before {
     width:30vw;
 }
 
-.competencies-list thead tr:first-child th:nth-child(2) {
-    border-left: dashed 0.15em var(--primary);
+.competencies-list thead tr:first-child th:nth-child(1){
+    border-right: dashed 0.15em var(--primary);
+}
+.competencies-list thead tr:first-child th:nth-child(4) {
+        border-left: dashed 0.15em var(--primary);
 }
 
 
