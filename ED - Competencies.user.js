@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ED - Competencies
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  Gollum is watching you
 // @author       Yannick SUC
 // @match        https://intra.epitech.digital/mod/competencies/view.php*
@@ -240,11 +240,8 @@ function resizeTextareas() {
 
     table.find('thead select').change(function(){
         var studentIndex = $(this).data("student");
-        console.log("yooo");
         var value = $(this).val();
-        console.log('tbody td:nth-child('+ (3 + parseInt(studentIndex)) +')');
         table.find('tbody td:nth-child('+ (3 + parseInt(studentIndex)) +')').each(function() {
-                    console.log("Update someone");
             updateSelect($(this), value);
         })
     })
@@ -398,7 +395,7 @@ function fillStudentsInfos(doMail, doScheduler) {
         }
     });
 
-    table.find('tr:not(:first-child)').each(function (i, el) {
+    table.find('tr').each(function (i, el) {
         var $tds = $(this).find('td'),
             behavior = $tds.eq(0).find('b').text(),
             behavior_description = $tds.eq(0).find('p').text(),
@@ -406,7 +403,7 @@ function fillStudentsInfos(doMail, doScheduler) {
             comment = $tds.eq(2).find("textarea").val();
         for (var j = 3; j < $tds.length && j < students.length + 3; j++) {
             const grade = $tds.eq(j).find("option:selected").attr('title');
-            students[j -3].addCompetency(new Competency("", behavior, behavior_description, grade, comment));
+            students[j - 3].addCompetency(new Competency("", behavior, behavior_description, grade, comment));
         }
     });
     for (var i = 0; i < students.length; i++) {
