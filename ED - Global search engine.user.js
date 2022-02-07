@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ED - Global search engine
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  try to take over the world!
 // @author       Yannick SUC
 // @match        https://intra.epitech.digital/*
@@ -43,6 +43,7 @@ function saveCoursesToStorage() {
 
 function fillCoursesFromStorage() {
     courses = JSON.parse(localStorage.getItem('courses'))
+    console.log(courses)
     if (!courses) {
         courses = [];
     }
@@ -81,7 +82,7 @@ const loader = '<div class="lds-facebook"><div></div><div></div><div></div></div
 
 function KeyPress(e) {
     var evtobj = window.event? event : e
-    if (e.keyCode == 32 && evtobj.ctrlKey)
+    if (e.keyCode == 32 && evtobj.shiftKey && evtobj.ctrlKey)
         toggleSearch();
 
     if (!global_search.is(":visible"))
@@ -95,11 +96,8 @@ function KeyPress(e) {
             switchPage(true)
         return e;
     } else if (e.keyCode != 9 && !evtobj.shiftKey && e.keyCode != 40){
-        if (isOnSecondPage) {
+        if (isOnSecondPage && searchbar.is( ":focus" )) {
             switchPage(false);
-        }
-        if(!searchbar.is( ":focus" )) {
-            searchbar.focus(); //refocus if user start typing again
         }
     }
 }
@@ -119,6 +117,7 @@ function switchPage(forcePage) {
     }
 
     isOnSecondPage = !isOnSecondPage;
+    console.log(isOnSecondPage);
 }
 
 function launchPageSwitchAnimation()
@@ -184,7 +183,7 @@ function toggleElementVisibility(box) {
           <ul id="gs-courselist" style="display: block; height: calc(100% - 2.5em); overflow-y: scroll; overflow-x: hidden; margin: auto;padding: 0;">${loader}<ul>
         </div>
         <div class="flip-card-back" style="position: absolute;width: 100%;height: 100%; background-color: var(--light);-webkit-backface-visibility: hidden;backface-visibility: hidden; transform: rotateY(180deg); overflow: hidden;">
-          <h5 style="position: relative; display: block; height: 1.5em; text-align: center; vertical-align: middle; line-height: 2em; border-bottom: #ddd solid 1px; margin: 0; padding-bottom: 2em;">Course detail</h5>
+          <h5 style="position: relative; display: block; height: 1.5em; text-align: center; vertical-align: middle; line-height: 2em; border-bottom: #ddd solid 1px; margin: 0; padding-bottom: 2em;">Course activities</h5>
           <button class="back-page" type="button" style="padding: 0 3em 0 0.5em;box-shadow:rgba(0,0,0,0.1) 0 4px 6px -1px,rgba(0,0,0,0.06) 0 2px 4px -1px;border:unset;width:1.5em;height:1.5em;background-color:var(--primary);color:var(--white);border-radius:1.5em;position:absolute;top: 6.5px;left: 0.9em;display: flex;"><i class="fa fa-angle-left" style="margin: auto;pointer-events: none;"></i><span style="padding-left: 0.2em;margin: auto;font-size: 0.8em;">back</span></button>
           <ul id="gs-courselist2" style="display: block; height: calc(100% - 2.5em); overflow-y: scroll; overflow-x: hidden; margin: auto;padding: 0;"><ul>
         </div>
@@ -213,7 +212,7 @@ function toggleElementVisibility(box) {
 
     document.onkeydown = KeyPress;
 
-    $('.fixed-top .nav.navbar-nav').prepend('<button class="btn btn-primary" id="open-search" value="" style="height: 36px;margin: auto;width: fit-content;"><i class="fa fa-search" style="margin-right: 0.3em;"></i>  ctrl + space</button>')
+    $('.fixed-top .nav.navbar-nav').prepend('<button class="btn btn-primary" id="open-search" value="" style="height: 36px;margin: auto;width: fit-content;"><i class="fa fa-search" style="margin-right: 0.3em;"></i>  ctrl + shift + space</button>')
     $('#open-search').click(function(){toggleSearch();})
 
     $(document).on('keydown', '#global-search input, #global-search button, #global-search a', function(e) {
