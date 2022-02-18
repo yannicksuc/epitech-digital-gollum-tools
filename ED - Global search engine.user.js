@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ED - Global search engine
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  try to take over the world!
 // @author       Yannick SUC
 // @match        https://intra.epitech.digital/*
@@ -170,13 +170,13 @@ function toggleElementVisibility(box) {
 (function() {
     $('body').append(`
 <div id="global-search" class="hidden visuallyhidden" style="top:0; left:0; width: 100vw; height: 100vh; position: fixed; z-index: 2042; margin:0; padding:0; overflow: hidden;">
-  <div id="gs-searchbar-container" style="width: 100%; display: flex; height: 10em;">
+  <div id="gs-searchbar-container" style="width: 100%; display: flex; height: 20vh;">
     <div style="margin: auto; height: 2.5em; position: relative;">
       <input id="gs-searchbar" style="width: 100%; height: 100%"><i class="fa fa-search" style="position: absolute; top: 0.75em; right: 1em; pointer-events: none;"></i>
     </div>
   </div>
 
-    <div class="flip-card" style="perspective: 1000px; background-color: transparent; min-width: 32em; height: 74vh; margin: auto; width: fit-content;">
+    <div class="flip-card" style="perspective: 1000px; background-color: transparent; min-width: 32em; height: 80vh; margin: auto; padding-bottom: calc((20vh - 2.5em) / 2); width: fit-content;">
       <div class="flip-card-inner" style="  position: relative;width: 100%;height: 100%;transition: transform 0.6s;transform-style: preserve-3d;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
         <div class="flip-card-front" id="gs-output-container" style="background-color: var(--light); position: absolute;width: 100%;height: 100%;-webkit-backface-visibility: hidden;backface-visibility: hidden; overflow: hidden;">
           <h5 style="position: relative; display: block; height: 1.5em; text-align: center; vertical-align: middle; line-height: 2em; border-bottom: #ddd solid 1px; margin: 0; padding-bottom: 2em;">Courses list</h5>
