@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ED - Competencies
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  Gollum is watching you
 // @author       Yannick SUC
 // @match        https://intra.epitech.digital/mod/competencies/view.php*
@@ -408,6 +408,8 @@ function fillStudentsInfos(doMail, doScheduler) {
     });
     for (var i = 0; i < students.length; i++) {
         sendStudent(doMail, doScheduler, i);
+        if (doScheduler) //Pour eviter d'envoyer 36 fois le meme comment dans le scheduler
+            doScheduler = false;
     }
 }
 
@@ -428,8 +430,8 @@ function sendStudent(doMail, doScheduler, studentIndex) {
     output.extract = table;
     output.course = course_name;
 
-    if (doScheduler)
-        findScheduler(getKeynoteUrl(), data.users[studentIndex].id, table)
+//    if (doScheduler)
+//        findScheduler(getKeynoteUrl(), data.users[studentIndex].id, table)
     if (doMail)
         xhr.send(JSON.stringify(output));
 }
@@ -497,6 +499,26 @@ function getCookie(name) {
   if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
+function getStudentsSlots(DOM) {
+    let lastDate = undefined;
+    let lastHour = undefined;
+    return DOM.find('#slotmanager tbody tr').map(function(elem) {
+        let date = $(this).find('td.c1').html()
+        if (date)
+            lastDate = date
+        let hour = $(this).find('td.c3').html()
+        if (hour)
+            lastHour = hour
+        const students = $(this).find('td.c5 .studentlist > a').attr('href').split('=')[1].split(',').filter(n => n);
+        const summarizedInfo = {
+            'date': lastDate,
+            'dateTimestamp': toTimestamp(lastDate + ' ' + lastHour),
+            'students': students
+        }
+        return summarizedInfo;
+    })
+}
+
 function findScheduler(url, userIdToFind, message) {
 
 var requestOptions = {
@@ -504,11 +526,13 @@ var requestOptions = {
   headers: myHeaders,
   redirect: 'follow'
 };
+            console.log("Find scheduler")
     fetch(url, requestOptions)
         .then(response => response.text())
         .then(result => {
         let pageDom = $($.parseHTML(result));
         const scheduler = pageDom.find('a[href*="id='+userIdToFind+'"]');
+        console.log("dedede")
         if (scheduler && scheduler.html()) {
             var tdTeacher = scheduler.parent().parent().parent().parent().next();
             var teacherId = new URL(tdTeacher.find('a').attr('href')).searchParams.get('id');
@@ -517,10 +541,12 @@ var requestOptions = {
             setSchedulerComment(actionUrl.searchParams.get('id'), actionUrl.searchParams.get('slotid'), actionUrl.searchParams.get('sesskey'), teacherId, message);
         } else {
             var nextpage = pageDom.find('a[aria-label="Next"]');
-            if (nextpage) {
+            console.log(nextpage)
+            console.log(nextpage.length)
+            if (nextpage.length) {
                 findScheduler(nextpage.attr("href"), userIdToFind)
             } else {
-                console.warn("No scheduler found")
+                console.warn("No next scheduler found")
             }
         }
     })
@@ -538,6 +564,11 @@ urlencoded.append("_qf__scheduler_editslot_form", "1");
 urlencoded.append("teacherid", teacherid);//ex:  "58"
 urlencoded.append("notes_editor[text]", message); //ex: "<p+dir=\"ltr\"+style=\"text-align:left;\">coucou</p>"
 urlencoded.append("notes_editor[format]", "1");
+urlencoded.append("starttime", undefined)
+//urlencoded.append("starttime[month]", 0)
+//urlencoded.append("starttime[year]", 0)
+//urlencoded.append("starttime[hour]", 0)
+//urlencoded.append("starttime[minute]", 0)
 
 var requestOptions = {
   method: 'POST',
@@ -546,6 +577,7 @@ var requestOptions = {
   redirect: 'follow'
 };
 
+            console.log("Set Scheduler")
     fetch("https://intra.epitech.digital/mod/scheduler/view.php", requestOptions)
         .then(response => response.text())
         .then(result => console.log('Sent !'))
