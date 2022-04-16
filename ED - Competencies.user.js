@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ED - Competencies
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.7
 // @description  Gollum is watching you
 // @author       Yannick SUC
 // @match        https://intra.epitech.digital/mod/competencies/view.php*
@@ -169,13 +169,14 @@ function resizeTextareas() {
     var button_selector = '#page-mod-competencies-view #fitem_id_submitbutton .form-inline.felement';
 
     $("#fitem_id_group .col-md-9").append(`
-    <input class="btn btn-primary exportbuttonMS" name="exportbuttonMS" id="id_exportbuttonMS" value="Send mail & scheduler" style="margin-left:8px;margin-bottom: 8px;">
-    <input class="fa btn btn-secondary exportbuttonM" name="exportbuttonM" id="id_exportbuttonM" title="Send by mail" value="" style=" padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;">
-    <input class="fa btn btn-secondary exportbuttonS" name="exportbuttonS" id="id_exportbuttonS" title="Send on scheduler" value="" style="padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;">
+    <input class="btn btn-primary exportbuttonMS" name="exportbuttonMS" id="id_exportbuttonMS" value="Send mail" style="margin-left:8px;margin-bottom: 8px;">
+    <!--input class="fa btn btn-secondary exportbuttonM" name="exportbuttonM" id="id_exportbuttonM" title="Send by mail" value="" style=" padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;"-->
+    <!--input class="fa btn btn-secondary exportbuttonS" name="exportbuttonS" id="id_exportbuttonS" title="Send on scheduler" value="" style="padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;"-->
     <div style="width: 100%;" class="csv-taskbar">
         <input class="import-input" placeholder="Paste here the competencies you want to import (1,2,1,0,4...)" class="" style="vertical-align: middle;width: calc(100% - 44px); border: 1px solid #ced4da; height: 34px; margin-bottom: 8px; max-width: 34.9em;">
-        <input class="fa btn btn-secondary importbutton" name="importbutton" id="id_importbutton" title="Convert csv to competencies (from input bar to page)" value="" style="padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;">
-        <input class="fa btn btn-secondary convertbutton" name="convertbutton" id="id_convertbutton" title="Convert competencies to csv in (from page to input bar)" value="" style="padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;">
+        <input class="fa btn btn-secondary importbutton" name="importbutton" id="id_importbutton" title="Convert csv to competencies (from input bar to page)" value="" style="padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;">
+        <input class="fa btn btn-secondary convertbutton" name="convertbutton" id="id_convertbutton" title="Convert competencies to csv in (from page to input bar)" value="" style="transform: scaleX(-1) rotate(-90deg); padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;">
+        <input type="submit" class="btn btn-primary" name="submitbutton" id="id_submitbutton" value="Save changes" style="padding-inline: 8px; margin-left: 8px; height: 35px; margin-bottom: 8px; width: 122px;">
     </div>`)
     $("#fitem_id_group .col-md-9 select").css("margin-bottom", "8px");
 
@@ -211,7 +212,14 @@ function resizeTextareas() {
     });
 
     $(".importbutton").click(function() {
-        const values = import_input.val().split(',');
+        const args = import_input.val().split(';;;')
+        console.log(args.length > 1)
+                console.log(args[1].length > 0)
+        const values = args[0].split(',');
+        if (args.length > 1 && args[1].length > 0) {
+            $('#id_globalcommenteditable').html(args[1])
+            $('#id_globalcomment').html(args[1])
+        }
         $('td:nth-child(2) select').each(function( index ) {
             if (index < values.length) {
                 $(this).val(values[index].toString());
@@ -429,6 +437,9 @@ function sendStudent(doMail, doScheduler, studentIndex) {
     var table = generateTable(students[studentIndex]);
     output.extract = table;
     output.course = course_name;
+    output.comment = $('#id_globalcommenteditable').html();
+
+//    console.log(output);
 
 //    if (doScheduler)
 //        findScheduler(getKeynoteUrl(), data.users[studentIndex].id, table)
