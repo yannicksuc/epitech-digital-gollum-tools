@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ED - Competencies
 // @namespace    http://tampermonkey.net/
-// @version      1.7
+// @version      1.9
 // @description  Gollum is watching you
 // @author       Yannick SUC
 // @match        https://intra.epitech.digital/mod/competencies/view.php*
@@ -76,7 +76,7 @@ function setupGroupsSearchBar()
 
 function createGroupsSearchBar()
 {
-    $("#fitem_id_group .col-md-9").append('<input id="groups-searchbar" placeholder="Search for a group or student..."></input>');
+    $("#fitem_id_group .col-md-9").append('<input id="groups-searchbar" placeholder="Search for a group or student..." style="width: calc(100% - 217px) !important"></input>');
 }
 
 createGroupsSearchBar();
@@ -163,26 +163,28 @@ function resizeTextareas() {
 }
 
 (function() {
+    $(".description.row").html("")
     createCompetenciesDescriptionModeToggle();
 
     var button = '<input class="btn btn-secondary" name="exportbutton" id="id_exportbutton" value="Export & Send result">';
     var button_selector = '#page-mod-competencies-view #fitem_id_submitbutton .form-inline.felement';
 
     $("#fitem_id_group .col-md-9").append(`
-    <input class="btn btn-primary exportbuttonMS" name="exportbuttonMS" id="id_exportbuttonMS" value="Send mail" style="margin-left:8px;margin-bottom: 8px;">
+    <input type="button" class="btn btn-primary exportbuttonMS" name="exportbuttonMS" id="id_exportbuttonMS" value=" Send mail" style="margin-left:8px;margin-bottom: 8px; font-family: 'FontAwesome', 'Poppins';width: 209px;">
     <!--input class="fa btn btn-secondary exportbuttonM" name="exportbuttonM" id="id_exportbuttonM" title="Send by mail" value="" style=" padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;"-->
     <!--input class="fa btn btn-secondary exportbuttonS" name="exportbuttonS" id="id_exportbuttonS" title="Send on scheduler" value="" style="padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;"-->
     <div style="width: 100%;" class="csv-taskbar">
         <input class="import-input" placeholder="Paste here the competencies you want to import (1,2,1,0,4...)" class="" style="vertical-align: middle;width: calc(100% - 44px); border: 1px solid #ced4da; height: 34px; margin-bottom: 8px; max-width: 34.9em;">
-        <input class="fa btn btn-secondary importbutton" name="importbutton" id="id_importbutton" title="Convert csv to competencies (from input bar to page)" value="" style="padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;">
-        <input class="fa btn btn-secondary convertbutton" name="convertbutton" id="id_convertbutton" title="Convert competencies to csv in (from page to input bar)" value="" style="transform: scaleX(-1) rotate(-90deg); padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;">
-        <input type="submit" class="btn btn-primary" name="submitbutton" id="id_submitbutton" value="Save changes" style="padding-inline: 8px; margin-left: 8px; height: 35px; margin-bottom: 8px; width: 122px;">
+        <input type="button" class="fa btn btn-secondary importbutton" name="importbutton" id="id_importbutton" title="Convert csv to competencies (from input bar to page)" value="" style="padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;">
+        <input type="button" class="fa btn btn-secondary convertbutton" name="convertbutton" id="id_convertbutton" title="Convert competencies to csv in (from page to input bar)" value="" style="transform: scaleX(-1) rotate(-90deg); padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;margin-bottom: 8px;">
+        <input type="submit" class="btn btn-primary" name="submitbutton" id="id_submitbutton2" value="Save changes" style="padding-inline: 8px; margin-left: 8px; height: 35px; margin-bottom: 8px; width: 122px;">
     </div>`)
     $("#fitem_id_group .col-md-9 select").css("margin-bottom", "8px");
 
-    $(button_selector).append('<input class="btn btn-primary exportbuttonMS" name="exportbuttonMS2" id="id_exportbuttonMS2" value="Send mail & scheduler" style="margin-left:8px">')
-    $(button_selector).append('<input class="fa btn btn-secondary exportbuttonM" name="exportbuttonM2" id="id_exportbuttonM2" value="" title="Send by mail" style="padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;">')
-    $(button_selector).append('<input class="fa btn btn-secondary exportbuttonS" name="exportbuttonS2" id="id_exportbuttonS2" value="" title="Send on scheduler" style="padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;">')
+
+    $(button_selector).append('<input type="button" class="btn btn-primary exportbuttonMS" name="exportbuttonMS2" id="id_exportbuttonMS2" value=" Send mail" style="margin-left:8px; font-family: FontAwesome, Poppins;">')
+//    $(button_selector).append('<input class="fa btn btn-secondary exportbuttonM" name="exportbuttonM2" id="id_exportbuttonM2" value="" title="Send by mail" style="padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;">')
+//    $(button_selector).append('<input class="fa btn btn-secondary exportbuttonS" name="exportbuttonS2" id="id_exportbuttonS2" value="" title="Send on scheduler" style="padding-inline: 8px; margin-left: 8px; width: 35.6px; height: 35px;">')
 
     const import_input = $("#fitem_id_group .col-md-9 .import-input");
     const queryString = window.location.search;
@@ -213,8 +215,6 @@ function resizeTextareas() {
 
     $(".importbutton").click(function() {
         const args = import_input.val().split(';;;')
-        console.log(args.length > 1)
-                console.log(args[1].length > 0)
         const values = args[0].split(',');
         if (args.length > 1 && args[1].length > 0) {
             $('#id_globalcommenteditable').html(args[1])
@@ -226,6 +226,8 @@ function resizeTextareas() {
                 updateSelect($(this));
             }
         });
+        $('#id_globalcommenteditable').trigger('focus');
+        $('#id_globalcommenteditable').blur();
     });
     $(".convertbutton").click(function() {
         const values = [];
@@ -443,8 +445,9 @@ function sendStudent(doMail, doScheduler, studentIndex) {
 
 //    if (doScheduler)
 //        findScheduler(getKeynoteUrl(), data.users[studentIndex].id, table)
-    if (doMail)
+    if (doMail) {
         xhr.send(JSON.stringify(output));
+    }
 }
 
 
@@ -537,13 +540,11 @@ var requestOptions = {
   headers: myHeaders,
   redirect: 'follow'
 };
-            console.log("Find scheduler")
     fetch(url, requestOptions)
         .then(response => response.text())
         .then(result => {
         let pageDom = $($.parseHTML(result));
         const scheduler = pageDom.find('a[href*="id='+userIdToFind+'"]');
-        console.log("dedede")
         if (scheduler && scheduler.html()) {
             var tdTeacher = scheduler.parent().parent().parent().parent().next();
             var teacherId = new URL(tdTeacher.find('a').attr('href')).searchParams.get('id');
@@ -552,7 +553,6 @@ var requestOptions = {
             setSchedulerComment(actionUrl.searchParams.get('id'), actionUrl.searchParams.get('slotid'), actionUrl.searchParams.get('sesskey'), teacherId, message);
         } else {
             var nextpage = pageDom.find('a[aria-label="Next"]');
-            console.log(nextpage)
             console.log(nextpage.length)
             if (nextpage.length) {
                 findScheduler(nextpage.attr("href"), userIdToFind)
@@ -588,7 +588,6 @@ var requestOptions = {
   redirect: 'follow'
 };
 
-            console.log("Set Scheduler")
     fetch("https://intra.epitech.digital/mod/scheduler/view.php", requestOptions)
         .then(response => response.text())
         .then(result => console.log('Sent !'))
