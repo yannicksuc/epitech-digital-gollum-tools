@@ -91,7 +91,7 @@ function download(filename, list) {
     'use strict';
 
     var elements = document.getElementsByClassName("scheduler");
-    for (let item of elements) {
+    for (var item of elements) {
         console.log(item.id);
         var button = document.createElement("button");
         button.classList.add("btn");
@@ -99,6 +99,8 @@ function download(filename, list) {
         button.innerHTML = "Generate Tokens";
         button.type = "submit";
         button.style.height = "calc(1.5em + .75rem + 2px)"
+
+        const id = item.id.toString().replace("module-", "");
 
         var input = document.createElement("input");
         input.classList.add("form-control");
@@ -108,57 +110,17 @@ function download(filename, list) {
         input.type = "number";
         input.value = 25;
         input.min = 1;
-        input.id = "input" + item.id;
+        input.id = "input" + id;
         var title = document.createElement("span");
         title.innerHTML = "Génération de token :";
-
-        var id = item.id.toString().replace("module-", "");
 
         item.appendChild(title);
         item.appendChild(input);
         item.appendChild(button);
         button.addEventListener ("click", function() {
-            var token_number = document.getElementById('input' + item.id).value;
+            var token_number = document.getElementById('input' + id).value;
             var tokens = getTokens(id, token_number)
-            download(item.id + "_token.txt", tokens)
+            download(id + "_token.txt", tokens)
         });
     }
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
