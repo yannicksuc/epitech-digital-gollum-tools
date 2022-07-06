@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ED - Competencies
 // @namespace    http://tampermonkey.net/
-// @version      1.9
+// @version      2.0
 // @description  Gollum is watching you
 // @author       Yannick SUC
 // @match        https://intra.epitech.digital/mod/competencies/view.php*
@@ -162,6 +162,8 @@ function resizeTextareas() {
    })
 }
 
+//document.querySelector("#page-navbar > nav > ol > li:nth-child(5) > a")
+
 (function() {
     $(".description.row").html("")
     createCompetenciesDescriptionModeToggle();
@@ -199,17 +201,16 @@ function resizeTextareas() {
     });
 
     $("._statusDDL").val('2');
-
     $(".exportbuttonMS").click(function() {
-        course_name = $('.page-header-headings h1').html();
+        course_name = $('.page-header-headings h1').html() + " - " + $("#page-navbar > nav > ol > li:nth-last-child(2) > a").html();
         fillStudentsInfos(true, true)
     });
     $(".exportbuttonM").click(function() {
-        course_name = $('.page-header-headings h1').html();
+        course_name = $('.page-header-headings h1').html() + " - " + $("#page-navbar > nav > ol > li:nth-last-child(2) > a").html();
         fillStudentsInfos(true, false)
     });
     $(".exportbuttonS").click(function() {
-        course_name = $('.page-header-headings h1').html();
+        course_name = $('.page-header-headings h1').html() + " - " + $("#page-navbar > nav > ol > li:nth-last-child(2) > a").html();
         fillStudentsInfos(false, true)
     });
 
@@ -355,8 +356,8 @@ class Student {
     nameToEmail(name) {
         //HORRIBLE
         name = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replaceAll(" ", "-").replaceAll("'", '-').replace("Nick", "Nick1");
-        for (var i = 1; i < name.length; i++) {
-            if (name[i] == name[i].toUpperCase() && name[i - 1] == '-') {
+        for (var i = 1; i < name.length - 1; i++) {
+            if (name[i] == name[i].toUpperCase() && name[i - 1] == '-' && name[i+1] == name[i+1].toUpperCase()) {
                 name = this.replaceAt(name, i-1, '.')
                 break;
             }
@@ -449,8 +450,6 @@ function sendStudent(doMail, doScheduler, studentIndex) {
         xhr.send(JSON.stringify(output));
     }
 }
-
-
 
 
 /* HTML TABLE EXTRACT GENERATOR */
