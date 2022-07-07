@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ED - Competencies
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @version      2.1
 // @description  Gollum is watching you
 // @author       Yannick SUC
 // @match        https://intra.epitech.digital/mod/competencies/view.php*
@@ -238,24 +238,12 @@ function resizeTextareas() {
         import_input.val(values.join(','))
     });
 
-    $('body').on('DOMSubtreeModified', 'th.studname-1', function(){
-        resizeTextareas();
-    });
+    console.log($('tbody li').length)
 
-    const table = $(".competencies-list table")
-    var oldXHR = window.XMLHttpRequest;
-    table.find('tbody td select').each(function() {
-          $(this).prop('multiple', true)
-        updateOptions($(this))
-    })
+            var oldXHR = window.XMLHttpRequest;
+                                    const table = $(".competencies-list table")
 
-    table.find('thead select').change(function(){
-        var studentIndex = $(this).data("student");
-        var value = $(this).val();
-        table.find('tbody td:nth-child('+ (3 + parseInt(studentIndex)) +')').each(function() {
-            updateSelect($(this), value);
-        })
-    })
+    var updated = false;
 
     function newXHR() {
         var realXHR = new oldXHR();
@@ -265,6 +253,28 @@ function resizeTextareas() {
                     data = JSON.parse(realXHR.responseText)[0].data;
                     var competencies = [data.competencies]
                     data.users.forEach(elem => competencies.push(elem.competencies))
+                    if (!updated && competencies[0].length < 30) {
+                        updated = true;
+                        $('body').on('DOMSubtreeModified', 'th.studname-1', function(){
+                            resizeTextareas();
+                        });
+                        table.find('tbody td select').each(function() {
+                            $(this).prop('multiple', true)
+                            updateOptions($(this))
+                        })
+
+                        table.find('thead select').change(function(){
+                            var studentIndex = $(this).data("student");
+                            var value = $(this).val();
+                            table.find('tbody td:nth-child('+ (3 + parseInt(studentIndex)) +')').each(function() {
+                                updateSelect($(this), value);
+                            })
+                        })
+
+                        //    displayMessage("tests", 1);
+                        !function(t){t.fn.resizableColumns=function(){var r=!1,h=0,i=t(this),a=t(this).find("thead").first();a.find("th.resizable").each(function(){t(this).css("position","sticky"),t(this).is(":not(:last-child)")&&t(this).is(":not(.no-resize)")&&t(this).nextAll("th.no-resize").length<t(this).nextAll("th").length&&t(this).append("<div class='resizer' style='position:absolute;top:0px;right:-3px;bottom:0px;width:6px;z-index:999;background:transparent;cursor:col-resize'></div>")}),t(document).mouseup(function(i){a.find("th").removeClass("resizing"),r=!1,i.stopPropagation()}),i.find(".resizer").mousedown(function(i){0==i.button&&(a.find("th").removeClass("resizing"),t(a).find("tr:first-child th:nth-child("+(t(this).closest("th").index()+1)+") .resizer").closest("th").addClass("resizing"),h=i.pageX,r=!0),i.stopPropagation()}).click(function(i){return!1}),i.mousemove(function(i){if(r){resizeTextareas();var t=a.find("th.resizing .resizer");if(1==t.length){var n=a.find("th.resizing + th");n.hasClass("no-resize")&&(n=n.next("th:not(.no-resize)"));var e=(i.pageX||0)-h,s=t.closest("th").innerWidth()+e,o=n.innerWidth()-e;0!=h&&0!=e&&50<s&&50<o&&(t.closest("th").innerWidth(s),h=i.pageX,n.innerWidth(o))}}})}}(jQuery);
+                        $('table').resizableColumns();
+                    }
                     table.find('tbody td:nth-child(-n+'+(competencies.length+2)+') select').each(function() {
                         let splittedId = $(this).attr('id').split('_');
                         let compid = splittedId[2];
@@ -284,10 +294,6 @@ function resizeTextareas() {
     }
 
     window.XMLHttpRequest = newXHR;
-
-//    displayMessage("tests", 1);
-    !function(t){t.fn.resizableColumns=function(){var r=!1,h=0,i=t(this),a=t(this).find("thead").first();a.find("th.resizable").each(function(){t(this).css("position","sticky"),t(this).is(":not(:last-child)")&&t(this).is(":not(.no-resize)")&&t(this).nextAll("th.no-resize").length<t(this).nextAll("th").length&&t(this).append("<div class='resizer' style='position:absolute;top:0px;right:-3px;bottom:0px;width:6px;z-index:999;background:transparent;cursor:col-resize'></div>")}),t(document).mouseup(function(i){a.find("th").removeClass("resizing"),r=!1,i.stopPropagation()}),i.find(".resizer").mousedown(function(i){0==i.button&&(a.find("th").removeClass("resizing"),t(a).find("tr:first-child th:nth-child("+(t(this).closest("th").index()+1)+") .resizer").closest("th").addClass("resizing"),h=i.pageX,r=!0),i.stopPropagation()}).click(function(i){return!1}),i.mousemove(function(i){if(r){resizeTextareas();var t=a.find("th.resizing .resizer");if(1==t.length){var n=a.find("th.resizing + th");n.hasClass("no-resize")&&(n=n.next("th:not(.no-resize)"));var e=(i.pageX||0)-h,s=t.closest("th").innerWidth()+e,o=n.innerWidth()-e;0!=h&&0!=e&&50<s&&50<o&&(t.closest("th").innerWidth(s),h=i.pageX,n.innerWidth(o))}}})}}(jQuery);
-    $('table').resizableColumns();
 
 })();
 
