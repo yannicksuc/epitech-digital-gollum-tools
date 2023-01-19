@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ED - Competencies
 // @namespace    http://tampermonkey.net/
-// @version      2.1
+// @version      2.2
 // @description  Gollum is watching you
 // @author       Yannick SUC
 // @match        https://intra.epitech.digital/mod/competencies/view.php*
@@ -379,9 +379,10 @@ class Student {
 class Competency {
 
   constructor(code, behavior, behavior_description, grade, comment) {
+      console.log(behavior);
       this.code = code;
       this.behavior = behavior;
-      this.behavior_description = behavior_description;
+      this.behavior_description = "";
       this.comment = comment;
       if (!grade) {
           this.grade = "Not graded";
@@ -406,20 +407,35 @@ function fillStudentsInfos(doMail, doScheduler) {
             comment = $tds.eq(2).text();
         for (var j = 3; j < $tds.length; j++) {
             const student_name = $tds.eq(j).text();
-            if (!student_name.toLowerCase().includes("student")) {
+            if (!$tds.eq(j).hasClass("d-none") && !student_name.toLowerCase().includes("student")) {
                 students.push(new Student(student_name))
             }
         }
     });
 
     table.find('tr').each(function (i, el) {
-        var $tds = $(this).find('td'),
-            behavior = $tds.eq(0).find('b').text(),
-            behavior_description = $tds.eq(0).find('p').text(),
-            group = $tds.eq(1).text(),
+        var $tds = $(this).find('td')
+            behavior = $tds.eq(0).find('b').text()
+            behavior_description = ""//$tds.eq(0).find('p').text(),
+            group = $tds.eq(1).text()
             comment = $tds.eq(2).find("textarea").val();
         for (var j = 3; j < $tds.length && j < students.length + 3; j++) {
-            const grade = $tds.eq(j).find("option:selected").attr('title');
+            const option = $tds.eq(j).find("option:selected");
+            let grade = option.attr('title');
+            if (!grade)
+                grade = option.html();
+            if (!grade)
+                grade = "Not evaluated"
+            if (grade.includes('miss'))
+                grade = '<b style=\'color: #ec7062;\'>▶ </b>' + grade;
+            else if (grade.includes('bel'))
+                grade = '<b style=\'color: #f4cf40;\'>▶ </b>' + grade;
+            else if (grade.includes('mee'))
+                grade = '<b style=\'color: #57d68c;\'>▶ </b>' + grade;
+            else if (grade.includes('abov'))
+                grade = '<b style=\'color: #5cade2;\'>▶ </b>' + grade;
+            else
+                grade = '<b style=\'color: #b1babb;\'>▶ </b>' + grade;
             students[j - 3].addCompetency(new Competency("", behavior, behavior_description, grade, comment));
         }
     });
